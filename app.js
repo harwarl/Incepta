@@ -40,6 +40,8 @@ app.post(
   }
 );
 
+app.post("/webhook", async (req, res) => {});
+
 app.listen(PORT, () => {
   console.log(`Bot is running on http://localhost:${PORT}`);
 });

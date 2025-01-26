@@ -8,7 +8,7 @@ export async function DiscordRequest(endpoint, options) {
   const res = await fetch(url, {
     headers: {
       Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
-      "Content-Type": "application/json: charset=UTF-8",
+      "Content-Type": "application/json",
     },
     ...options,
   });
@@ -31,5 +31,3 @@ export async function InstallGlobalCommands(appId, commands) {
     console.error(error);
   }
 }
-
-
