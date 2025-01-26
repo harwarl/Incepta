@@ -5,6 +5,7 @@ import {
   InteractionType,
   verifyKeyMiddleware,
 } from "discord-interactions";
+import { COMMANDS } from "./constants.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 5050;
@@ -28,7 +29,7 @@ app.post(
       const { name } = data;
 
       //Test Command
-      if (name === "test") {
+      if (name === COMMANDS.TEST) {
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -50,8 +51,8 @@ app.post(
 
 app.post("/webhook", async (req, res) => {
   const { api_key } = req.query;
-  console.log({ api_key });
-  return res.send({ api_key });
+  // Always respond 200
+  res.status(200).send(undefined);
 });
 
 app.listen(PORT, () => {
