@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-import bodyParser from "body-parser";
 import {
   InteractionResponseType,
   InteractionType,
@@ -11,9 +10,6 @@ dotenv.config();
 const PORT = process.env.PORT || 5050;
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
 app.get("/tests", async (req, res) => {
   res.send({ message: "E work now" });
 });
@@ -22,10 +18,24 @@ app.post(
   "/interactions",
   verifyKeyMiddleware(process.env.PUBLIC_KEY),
   async (req, res) => {
-    const { type } = req.body;
+    const { type, id, data } = req.body;
 
     if (type === InteractionType.PING) {
       return res.send({ type: InteractionResponseType.PONG });
+    }
+
+    if (type === InteractionType.APPLICATION_COMMAND) {
+      const { name } = data;
+
+      //Test Command
+      if (name === "test") {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: "Hello There 👽",
+          },
+        });
+      }
     }
   }
 );
