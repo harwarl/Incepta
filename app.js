@@ -4,6 +4,8 @@ import {
   InteractionResponseType,
   InteractionType,
   verifyKeyMiddleware,
+  MessageComponentTypes,
+  ButtonStyleTypes,
 } from "discord-interactions";
 import { COMMANDS } from "./constants.js";
 dotenv.config();
@@ -19,7 +21,7 @@ app.post(
   "/interactions",
   verifyKeyMiddleware(process.env.PUBLIC_KEY),
   async (req, res) => {
-    const { type, id, data, user } = req.body;
+    const { type, id, data, user, context } = req.body;
 
     if (type === InteractionType.PING) {
       return res.send({ type: InteractionResponseType.PONG });
@@ -34,6 +36,32 @@ app.post(
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: `Hello There <@${user.id}> 👽`,
+          },
+        });
+      }
+
+      if (name === COMMANDS.SETUP && id) {
+        const userId = context == 0 ? req.body.member.user.id : user.id;
+
+        const objectName = data.options[0].value;
+
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: `Rock papers scissors challenge from <@${userId}>`,
+            components: [
+              {
+                type: MessageComponentTypes.ACTION_ROW,
+                components: [
+                  {
+                    type: MessageComponentTypes.BUTTON,
+                    custom_id: `accept_button_${req.body.id}`,
+                    label: "Accept",
+                    style: ButtonStyleTypes.PRIMARY,
+                  },
+                ],
+              },
+            ],
           },
         });
       }
