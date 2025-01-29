@@ -45,6 +45,7 @@ app.post(
 
         const objectName = data.options[0].value;
 
+        console.log({ objectName });
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
