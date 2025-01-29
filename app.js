@@ -47,29 +47,88 @@ app.post(
 
         console.log({ objectName });
         return res.send({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: `Rock papers scissors challenge from <@${userId}>`,
-            components: [
-              {
-                type: MessageComponentTypes.ACTION_ROW,
-                components: [
-                  {
-                    type: MessageComponentTypes.BUTTON,
-                    custom_id: `accept_button_${req.body.id}`,
-                    label: "Accept",
-                    style: ButtonStyleTypes.PRIMARY,
-                  },
-                ],
-              },
-            ],
-          },
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.API_KEY && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.BLACKLIST && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.BLACKLIST_LIST && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.WHITELIST && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.WHITELIST_LIST && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.CALENDER && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.PENDING && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.RAFFLE_WINS && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.REPORT && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.STATUS && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.TRENDING && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
+
+      if (name === COMMANDS.WEBHOOK && id) {
+        return res.send({
+          type: InteractionResponseType.PONG,
         });
       }
 
       //If the command does not exist
       console.error(`unknown command: ${name}`);
       return res.status(400).json({ error: "unknown command" });
+    }
+
+    if (type === InteractionType.MESSAGE_COMPONENT) {
     }
 
     //For Unknown interaction type
