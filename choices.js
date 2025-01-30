@@ -1,6 +1,7 @@
 export const setUpChoices = {
   "🔑 API_KEY": {
     description: "Alphabot API KEY",
+    value: "api_key",
   },
 
   "🔔 Notification Preferences": {

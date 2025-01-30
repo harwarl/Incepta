@@ -14,3 +14,9 @@ export const COMMANDS = {
   BLACKLIST: "blacklist",
   BLACKLIST_LIST: "blacklist_list",
 };
+
+export const COLOURS = {
+  BLUE: 0x0000ff,
+  RED: 0xff4000,
+  ORANGE: 0xffa500,
+};

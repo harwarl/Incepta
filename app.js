@@ -8,6 +8,15 @@ import {
   ButtonStyleTypes,
 } from "discord-interactions";
 import { COMMANDS } from "./constants.js";
+import {
+  api_key_response,
+  notification,
+  pause_raffle,
+  retry_preference,
+  speed,
+  test_response,
+  webhook,
+} from "./response.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 5050;
@@ -22,6 +31,7 @@ app.post(
   verifyKeyMiddleware(process.env.PUBLIC_KEY),
   async (req, res) => {
     const { type, id, data, user, context } = req.body;
+    const randomColor = Math.floor(Math.random() * 16777215);
 
     if (type === InteractionType.PING) {
       return res.send({ type: InteractionResponseType.PONG });
@@ -34,9 +44,7 @@ app.post(
       if (name === COMMANDS.TEST) {
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: `Hello There <@${user.id}> 👽`,
-          },
+          data: test_response(user, randomColor),
         });
       }
 
@@ -44,11 +52,49 @@ app.post(
         const userId = context == 0 ? req.body.member.user.id : user.id;
 
         const objectName = data.options[0].value;
+        console.log({ data: data.options });
 
-        console.log({ objectName });
-        return res.send({
-          type: InteractionResponseType.PONG,
-        });
+        if (objectName.includes("api_key")) {
+          return res.send({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: api_key_response(),
+          });
+        }
+
+        if (objectName.includes("notification")) {
+          return res.send({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: notification(),
+          });
+        }
+
+        if (objectName.includes("speed")) {
+          return res.send({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: speed(),
+          });
+        }
+
+        if (objectName.includes("retry")) {
+          return res.send({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: retry_preference(),
+          });
+        }
+
+        if (objectName.includes("pause")) {
+          return res.send({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: pause_raffle(),
+          });
+        }
+
+        if (objectName.includes("webhook")) {
+          return res.send({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: webhook(),
+          });
+        }
       }
 
       if (name === COMMANDS.API_KEY && id) {
