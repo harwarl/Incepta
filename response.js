@@ -6,6 +6,7 @@ function getFooter() {
   };
 }
 
+/*------------------------------ TEST RESPONSE ------------------------------*/
 export const test_response = (user, randomColor) => {
   return {
     embeds: [
@@ -31,6 +32,7 @@ export const test_response = (user, randomColor) => {
   };
 };
 
+/*------------------------------SETUP API KEY RESPONSE ------------------------------*/
 export const api_key_response = (user) => {
   return {
     embeds: [
@@ -80,6 +82,19 @@ export const api_key_response = (user) => {
   };
 };
 
+export const APICommandResponseMessage = (responseMessage) => {
+  return {
+    embeds: [
+      {
+        title: "",
+        description: responseMessage,
+        color: COLOURS.BLUE,
+      },
+    ],
+  };
+};
+
+/*------------------------------ NOTIFICATION RESPONSE ------------------------------*/
 export const notification = (user) => {
   return {
     embeds: [
@@ -140,6 +155,7 @@ export const notification = (user) => {
   };
 };
 
+/*------------------------------ SPEED PREFERENCE RESPONSE ------------------------------*/
 export const speed = (user) => {
   return {
     embeds: [
@@ -209,6 +225,7 @@ export const speed = (user) => {
   };
 };
 
+/*------------------------------ RETRY PREFERENCES ------------------------------*/
 export const retry_preference = (user) => {
   return {
     embeds: [
@@ -244,6 +261,7 @@ export const retry_preference = (user) => {
   };
 };
 
+/*------------------------------ PAUSE RAFFLE ------------------------------*/
 export const pause_raffle = () => {
   return {
     embeds: [
@@ -279,6 +297,7 @@ export const pause_raffle = () => {
   };
 };
 
+/*------------------------------ WEBHOOK RESPONSE ------------------------------*/
 export const webhook = (user) => {
   return {
     embeds: [
@@ -291,8 +310,10 @@ export const webhook = (user) => {
           {
             name: "Webhook URL",
             value: user?.api_key
-              ? "```\nhttps://webhook.blanklabs.app/webhook?api_key=u5X0wdisuhdsjhdscdskjhdsiuHavO9\n```"
-              : "You have to set an api key to see your webhook",
+              ? `\`\`\`\nhttps://webhook.blanklabs.app/webhook?api_key=${encodeURIComponent(
+                  user.api_key
+                )}\n\`\`\``
+              : "You have to set an API key to see your webhook.",
           },
           {
             name: "Instructions",

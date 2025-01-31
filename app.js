@@ -5,9 +5,10 @@ import {
   InteractionType,
   verifyKeyMiddleware,
 } from "discord-interactions";
-import { COMMANDS } from "./constants.js";
+import { COLOURS, COMMANDS } from "./constants.js";
 import {
   api_key_response,
+  APICommandResponseMessage,
   notification,
   pause_raffle,
   retry_preference,
@@ -122,10 +123,33 @@ app.post(
       }
 
       if (name === COMMANDS.API_KEY && id) {
+        const userId = context === 0 ? req.body.member.user.id : user.id;
         const options = data.options[0];
 
+        const existing_user = await db_preferences.findOne({ userId });
+
+        let responseMessage = "Invalid Command";
+
+        if (options.name.includes("set") && options.value && existing_user) {
+          await db_preferences.updateOne(
+            { _id: existing_user._id },
+            { $set: { api_key: options.value } }
+          );
+
+          responseMessage = "✅ Your API key has been set successfully.";
+        }
+
+        if (options.name.includes("remove") && options.value && existing_user) {
+          await db_preferences.updateOne(
+            { _id: existing_user._id },
+            { $set: { api_key: "" } }
+          );
+          responseMessage = "🗑️ Your API key has been removed.";
+        }
+
         return res.send({
-          type: InteractionResponseType.PONG,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: APICommandResponseMessage(responseMessage),
         });
       }
 
@@ -190,8 +214,12 @@ app.post(
       }
 
       if (name === COMMANDS.WEBHOOK && id) {
+        const userId = context === 0 ? req.body.member.user.id : user.id;
+        const existing_user = await db_preferences.findOne({ userId });
+
         return res.send({
-          type: InteractionResponseType.PONG,
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: webhook(existing_user),
         });
       }
 
@@ -210,7 +238,7 @@ app.post(
 );
 
 app.post("/webhook", async (req, res) => {
-  const { api_key } = req.query;
+  // const { api_key } = req.query;
   // Always respond 200
   res.status(200).send(undefined);
 });
