@@ -1,7 +1,7 @@
 import { COMMANDS } from "./constants.js";
 import { InstallGlobalCommands } from "./utils.js";
 import {
-  api_keyChoices,
+  // api_keyChoices,
   blackListActions,
   createCommandChoices,
   date_filterChoices,
@@ -18,7 +18,7 @@ import {
 const setupCommandChoices = createCommandChoices(setUpChoices);
 const dateFilterCHoices = createCommandChoices(date_filterChoices);
 const sortByChoices = createCommandChoices(sort_byChoices);
-const setApiKeyChoices = createCommandChoices(api_keyChoices);
+// const setApiKeyChoices = createCommandChoices(api_keyChoices);
 const whiteListChoices = createCommandChoices(whiteListActions);
 const blackListChoices = createCommandChoices(blackListActions);
 const trendingTimeChoices = createCommandChoices(trendingTimeFilter);
@@ -82,7 +82,21 @@ const API_KEY_COMMAND = {
   name: COMMANDS.API_KEY,
   type: 1,
   description: "Manage your api key (check, set or remove)",
-  choices: setApiKeyChoices,
+  // choices: setApiKeyChoices,
+  options: [
+    {
+      type: 3,
+      name: "set_api_key",
+      description: "...",
+      required: false,
+    },
+    {
+      type: 3,
+      name: "remove",
+      description: "...",
+      required: false,
+    },
+  ],
   integration_types: [0, 1],
   contexts: [1, 2],
 };
@@ -212,6 +226,16 @@ const BLACKLIST_LIST_COMMAND = {
   name: COMMANDS.BLACKLIST_LIST,
   type: 1,
   description: "View or remove all your blacklisted projects and communities",
+  options: [
+    {
+      name: "remove_all",
+      description:
+        "set to true to remove all blacklisted projects and communities",
+      type: 3,
+      required: false,
+      choices: removeALL,
+    },
+  ],
   integration_types: [0, 1],
   contexts: [1, 2],
 };

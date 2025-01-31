@@ -31,12 +31,14 @@ export const test_response = (user, randomColor) => {
   };
 };
 
-export const api_key_response = () => {
+export const api_key_response = (user) => {
   return {
     embeds: [
       {
         title: "API Key Information",
-        description: `**Your current API key:** \`u5X0wwdUQ-mzDEbzhVix7iOtaHavO9\``,
+        description: user?.api_key
+          ? `**Your current API key:** \`${user.api_key}\``
+          : "You don't have an API key set yet.",
         color: COLOURS.BLUE,
         fields: [
           {
@@ -56,18 +58,21 @@ export const api_key_response = () => {
             label: "➕ Add API key",
             style: 3,
             custom_id: "add_api_key",
+            disabled: !!user?.api_key,
           },
           {
             type: 2,
             label: "✏️ Edit API key",
             style: 1,
             custom_id: "edit_api_key",
+            disabled: !user?.api_key,
           },
           {
             type: 2,
             label: "🗑️ Delete API key",
             style: 4,
             custom_id: "delete_api_key",
+            disabled: !user?.api_key,
           },
         ],
       },
@@ -75,7 +80,7 @@ export const api_key_response = () => {
   };
 };
 
-export const notification = () => {
+export const notification = (user) => {
   return {
     embeds: [
       {
@@ -85,8 +90,8 @@ export const notification = () => {
           "• 🔔 **All (default)**: Get notified for every registered raffle.\n\n" +
           "• ✅ **Success Only**: Only get notified if success register.\n\n" +
           "• ❌ **Failure Only**: Only get notified if failure register.\n\n" +
-          "• 🔕 **Off**: Turn off all notifications, registration task will run on the background.\n\n" +
-          "• 🌐 **Custom Channel**: Send notifications to custom channels at your server for success registration, failure registration, raffle wins, and whitelist mint reminders.",
+          "• 🔕 **Off**: Turn off all notifications, registration task will run on the background.\n\n",
+        //   "• 🌐 **Custom Channel**: Send notifications to custom channels at your server for success registration, failure registration, raffle wins, and whitelist mint reminders.",
         color: COLOURS.BLUE,
         footer: getFooter(),
       },
@@ -100,38 +105,42 @@ export const notification = () => {
             label: "🔔 All",
             style: 1,
             custom_id: "notification_all",
+            disabled: user?.notification === 3,
           },
           {
             type: 2,
             label: "✅ Success",
             style: 1,
             custom_id: "notification_success",
+            disabled: user?.notification === 1,
           },
           {
             type: 2,
             label: "❌ Failure",
             style: 1,
             custom_id: "notification_failure",
+            disabled: user?.notification === 2,
           },
           {
             type: 2,
             label: "🔕 Turn Off",
             style: 1,
             custom_id: "notification_off",
+            disabled: user?.notification === 0,
           },
-          {
-            type: 2,
-            label: "🌐 Custom Channel",
-            style: 1,
-            custom_id: "notification_custom",
-          },
+          //   {
+          //     type: 2,
+          //     label: "🌐 Custom Channel",
+          //     style: 1,
+          //     custom_id: "notification_custom",
+          //   },
         ],
       },
     ],
   };
 };
 
-export const speed = () => {
+export const speed = (user) => {
   return {
     embeds: [
       {
@@ -164,30 +173,35 @@ export const speed = () => {
             label: "Super Slow",
             style: 1,
             custom_id: "speed_ss",
+            disabled: user?.registrationSpeed === 0,
           },
           {
             type: 2,
             label: "Slow",
             style: 1,
             custom_id: "speed_s",
+            disabled: user?.registrationSpeed === 1,
           },
           {
             type: 2,
             label: "Normal",
             style: 1,
             custom_id: "speed_n",
+            disabled: user?.registrationSpeed === 2,
           },
           {
             type: 2,
             label: "Fast",
             style: 1,
             custom_id: "speed_f",
+            disabled: user?.registrationSpeed === 3,
           },
           {
             type: 2,
             label: "Super Fast",
             style: 1,
             custom_id: "speed_sf",
+            disabled: user?.registrationSpeed === 4,
           },
         ],
       },
@@ -195,7 +209,7 @@ export const speed = () => {
   };
 };
 
-export const retry_preference = () => {
+export const retry_preference = (user) => {
   return {
     embeds: [
       {
@@ -210,8 +224,20 @@ export const retry_preference = () => {
       {
         type: 1,
         components: [
-          { type: 2, label: "Enable", style: 3, custom_id: "retry_enable" },
-          { type: 2, label: "Disable", style: 4, custom_id: "retry_disable" },
+          {
+            type: 2,
+            label: "Enable",
+            style: 3,
+            custom_id: "retry_enable",
+            disabled: user?.retry,
+          },
+          {
+            type: 2,
+            label: "Disable",
+            style: 4,
+            custom_id: "retry_disable",
+            disabled: !user?.retry,
+          },
         ],
       },
     ],
@@ -233,15 +259,27 @@ export const pause_raffle = () => {
       {
         type: 1,
         components: [
-          { type: 2, label: "Pause", style: 4, custom_id: "pause_pause" },
-          { type: 2, label: "Resume", style: 3, custom_id: "pause_resume" },
+          {
+            type: 2,
+            label: "Pause",
+            style: 4,
+            custom_id: "pause_pause",
+            disabled: user?.rafflePause === 0,
+          },
+          {
+            type: 2,
+            label: "Resume",
+            style: 3,
+            custom_id: "pause_resume",
+            disabled: user?.rafflePause === 1,
+          },
         ],
       },
     ],
   };
 };
 
-export const webhook = () => {
+export const webhook = (user) => {
   return {
     embeds: [
       {
@@ -252,8 +290,9 @@ export const webhook = () => {
         fields: [
           {
             name: "Webhook URL",
-            value:
-              "```\nhttps://webhook.blanklabs.app/webhook?api_key=u5X0wdisuhdsjhdscdskjhdsiuHavO9\n```",
+            value: user?.api_key
+              ? "```\nhttps://webhook.blanklabs.app/webhook?api_key=u5X0wdisuhdsjhdscdskjhdsiuHavO9\n```"
+              : "You have to set an api key to see your webhook",
           },
           {
             name: "Instructions",

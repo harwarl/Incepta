@@ -4,8 +4,6 @@ import {
   InteractionResponseType,
   InteractionType,
   verifyKeyMiddleware,
-  MessageComponentTypes,
-  ButtonStyleTypes,
 } from "discord-interactions";
 import { COMMANDS } from "./constants.js";
 import {
@@ -17,6 +15,8 @@ import {
   test_response,
   webhook,
 } from "./response.js";
+import db from "./db/conn.js";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 5050;
@@ -32,6 +32,7 @@ app.post(
   async (req, res) => {
     const { type, id, data, user, context } = req.body;
     const randomColor = Math.floor(Math.random() * 16777215);
+    const db_preferences = db.collection("user_preferences");
 
     if (type === InteractionType.PING) {
       return res.send({ type: InteractionResponseType.PONG });
@@ -50,54 +51,79 @@ app.post(
 
       if (name === COMMANDS.SETUP && id) {
         const userId = context == 0 ? req.body.member.user.id : user.id;
+        let existing_user = await db_preferences.findOne({
+          userId: userId,
+        });
+
+        if (!existing_user) {
+          let insertDetails = await db_preferences.insertOne({
+            userId,
+            createdAt: new Date(),
+            notification: 3,
+            registrationSpeed: 2,
+            rafflePause: 1,
+            retry: false,
+          });
+
+          existing_user = await db_preferences.findOne({
+            userId: insertDetails.insertedId,
+          });
+        }
 
         const objectName = data.options[0].value;
-        console.log({ data: data.options });
 
+        /*------------------------------ API KEY ------------------------------*/
         if (objectName.includes("api_key")) {
           return res.send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: api_key_response(),
+            data: api_key_response(existing_user),
           });
         }
 
+        /*------------------------------ NOTIFICATION ------------------------------*/
         if (objectName.includes("notification")) {
           return res.send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: notification(),
+            data: notification(existing_user),
           });
         }
 
+        /*------------------------------ SPEED ------------------------------*/
         if (objectName.includes("speed")) {
           return res.send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: speed(),
+            data: speed(existing_user),
           });
         }
 
+        /*------------------------------ RETRY ------------------------------*/
         if (objectName.includes("retry")) {
           return res.send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: retry_preference(),
+            data: retry_preference(existing_user),
           });
         }
 
+        /*------------------------------ PAUSE ------------------------------*/
         if (objectName.includes("pause")) {
           return res.send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: pause_raffle(),
+            data: pause_raffle(existing_user),
           });
         }
 
+        /*------------------------------ WEBHOOK ------------------------------*/
         if (objectName.includes("webhook")) {
           return res.send({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: webhook(),
+            data: webhook(existing_user),
           });
         }
       }
 
       if (name === COMMANDS.API_KEY && id) {
+        const options = data.options[0];
+
         return res.send({
           type: InteractionResponseType.PONG,
         });
