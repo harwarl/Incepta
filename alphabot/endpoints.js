@@ -20,7 +20,6 @@ export const getRaffleList = async (
   {
     sort = "newest",
     sortDir = -1,
-    filter = "",
     scope = "all",
     status = "active",
     req = ["n", "d", "r", "f", "l", "t", "g"],
@@ -36,7 +35,6 @@ export const getRaffleList = async (
       params: {
         sort,
         sortDir,
-        filter,
         scope,
         status,
         req,
@@ -48,6 +46,21 @@ export const getRaffleList = async (
     return response.data;
   } catch (error) {
     console.error("Error registering API key:", error);
+    throw error;
+  }
+};
+
+export const getSingleRaffle = async (slug) => {
+  try {
+    const response = await axiosClient.get(`/raffles/${slug}`, {
+      Headers: {
+        Autorization: `Bearer ${api_key}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log("Error getting single raffle: ", error);
     throw error;
   }
 };
