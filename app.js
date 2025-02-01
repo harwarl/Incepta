@@ -177,11 +177,11 @@ app.post(
         });
       }
 
-      if (name === COMMANDS.CALENDER && id) {
-        return res.send({
-          type: InteractionResponseType.PONG,
-        });
-      }
+      // if (name === COMMANDS.CALENDER && id) {
+      //   return res.send({
+      //     type: InteractionResponseType.PONG,
+      //   });
+      // }
 
       if (name === COMMANDS.PENDING && id) {
         return res.send({
