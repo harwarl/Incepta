@@ -15,31 +15,21 @@ export const registerForRaffle = async (api_key, body) => {
   }
 };
 
-export const getRaffleList = async (
-  api_key,
-  {
-    sort = "newest",
-    sortDir = -1,
-    scope = "all",
-    status = "active",
-    req = ["n", "d", "r", "f", "l", "t", "g"],
-    pageNum = 0,
-    pageSize = 50,
-  }
-) => {
+export const getRaffleList = async (api_key, params) => {
   try {
     const response = await axiosClient.get("/raffles", {
       Headers: {
         Autorization: `Bearer ${api_key}`,
       },
       params: {
-        sort,
-        sortDir,
-        scope,
-        status,
-        req,
-        pageNum,
-        pageSize,
+        ...params,
+        status: "active",
+        scope: "all",
+        req: ["n", "d", "r", "f", "l", "t", "g"],
+        pageNum: 0,
+        pageSize: 50,
+        sort: "newest",
+        sortDir: -1,
       },
     });
 
@@ -64,3 +54,19 @@ export const getSingleRaffle = async (slug) => {
     throw error;
   }
 };
+
+export const getPendingRaffles = async (api_key) => {
+  try {
+    const params = {
+      filter: "pending",
+    };
+    const pendingRaffles = await getRaffleList(api_list, params);
+
+    return pendingRaffles;
+  } catch (error) {
+    console.log("Error getting pending raffles: ", error);
+  }
+};
+
+
+// export const 

@@ -183,11 +183,12 @@ app.post(
       //   });
       // }
 
-      // if (name === COMMANDS.PENDING && id) {
-      //   return res.send({
-      //     type: InteractionResponseType.PONG,
-      //   });
-      // }
+      if (name === COMMANDS.PENDING && id) {
+        //Get Pending Data from the API
+        return res.send({
+          type: InteractionResponseType.PONG,
+        });
+      }
 
       if (name === COMMANDS.RAFFLE_WINS && id) {
         return res.send({
